@@ -1,78 +1,123 @@
 // create a hashmap
 // var jsMap = new Map();
 // constant lookup O(1) from a js object
-var jsMap = {};
-// create a LinkedList
-var list = new LinkedList();
+// var jsMap = {};
+// create a LinkedList -> LRUCache
+var cache = new LRUCache();
 
-function LinkedList() {
+function LRUCache() {
 	this.head = null;
+	this.end = null;
+	this.map = {};
 }
-function Node(value) {
+function Node() {
 	this.value = value;
+	this.key = key;
 	this.next = null;
 	this.prev = null;
 }
-LinkedList.prototype.insert = function(val) {
+LRUCache.prototype.add = function(node) {
 	// insert the new value in the list...
-	var node = new Node(val);
-	var nextNode = null;
+	// var node = new Node();
+	// node.value = val;
+	// node.key = key;
+	// jsMap[key] 
+	// var nextNode = null;
 	if (!this.head) {
 		this.head = node;
+		this.end = node;
 	} else {
 		// reposition head
-		this.moveHead(node);
+		// this.moveHead(node);
+		node.next = this.head;
+		this.head.prev = node;
+		this.head = node;
 	}
 };
-LinkedList.prototype.moveHead = function(node) {
+/*LRUCache.prototype.moveToHead = function(node) {
 	// basically swap the head and the new Node...
 	var prevHeadNode = this.head;
 	this.head = node;
 	node.next = prevHeadNode;
 	prevHeadNode.prev = node;
-};
-LinkedList.prototype.moveToHead = function(node) {
+};*/
+LRUCache.prototype.moveToHead = function(node) {
 	// body...
 	this.remove(node);
-	this.moveHead(node);
+	this.add(node);
 };
-Link.prototype.remove = function(node) {
+LRUCache.prototype.remove = function(node) {
 	// body...
-	var currNode = this.head;
-	var prevNode = currNode;
+	// var headNode = this.head;
+	var prevNode = null;
 	var nextNode = null;
-	while (currNode) {
-		if (node === currNode) {
-			nextNode = currNode.next ? currNode.next : null;
-			prevNode.next = nextNode;
-			nextNode.prev = prevNode;
-		}
-		prevNode = currNode;
-		currNode = currNode.next;
+	if (this.head === this.end) {
+		this.head = null;
+		this.end = null;
+		return;
 	}
+	if (node === this.head) {
+		// nextNode = currNode.next ? currNode.next : null;
+		// prevNode.next = nextNode;
+		// nextNode.prev = prevNode;
+		this.head = this.head.next;
+		this.head.prev = null;
+		return;
+	}
+	if (node === this.end) {
+		// node.prev.next = null;
+		this.end.prev.next = null;
+		this.end = this.end.prev;
+		return;
+	}
+	prevNode = node.prev;
+	nextNode = node.next;
+	prevNode.next = nextNode;
+	nextNode.prev = prevNode;
+};
+LRUCache.prototype.set = function(key, value) {
+	// body...
+	var node;
+	if (this.data[key]) {
+		node = this.data[key];
+		this.remove(node);
+		this.add(node);
+		return;
+	}
+	// first time set
+	// var node = new Node();
+	node = new Node();
+	node.key = key;
+	node.value = value;
+	this.add(node);
+	this.map[key] = node;
 };
 
 // we need an O(1) lookup so for that we can use 
 // insert a new node in the list and pts at the head
 
-lruCache.prototype.get = function(key, val) {
-	// var node = new Node(val);
+LRUCache.prototype.get = function(key) {
+	var node;
 	if (!jsMap[key]) {
 		return false;
+	} else {
+		node = jsMap[key];
+		this.moveToHead(node);
+		return node.value;
 	}
 }
-lruCache.prototype.insert = function(key, val) {
+/*lruCache.prototype.insert = function(key, val) {
 	// body...
 	var node = new Node(val);
 	var list;
 	if (!jsMap[key]) {
-		list = new LinkedList();
+		list = new LRUCache();
 		jsMap[key] = node;
 	}
-};
+};*/
 
 function main() {
-	var cache = new lruCache();
+	var cache = new LRUCache();
 	cache.insert("10", "what");
-	cache.get("10", "what");
+	// cache.get("10", "what");
 }
