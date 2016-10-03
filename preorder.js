@@ -12,16 +12,22 @@ function preorder(node) {
 
 // w/o recursion
 var stack = new Stack();
-function noRecPreorder(node) {
-	while (node) {
-		stack.push(node);
+function noRecPreorder(root) {
+	if (root) {
+		stack.push(root);
+	}
+	// while (node) {
+	while (!stack.isEmpty()) {
+		// stack.push(node);
 		stack.pop(node);
-		stack.push(node.right);
-		stack.push(node.left);
-		if (node.left) {
-			node = node.left;
-		} else {
-			node = node.right;
+		// stack.push(node.right);
+		// stack.push(node.left);
+		if (node.right) {
+			// node = node.left;
+			stack.push(node.right);
+		} else if (node.left) {
+			// node = node.right;
+			stack.push(node.left);
 		}
 	}
 }
