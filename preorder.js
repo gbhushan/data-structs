@@ -15,6 +15,8 @@ var stack = new Stack();
 function noRecPreorder(root) {
 	if (root) {
 		stack.push(root);
+	} else {
+		return;
 	}
 	// while (node) {
 	while (!stack.isEmpty()) {
